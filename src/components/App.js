@@ -3,6 +3,7 @@ import React from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
+import ImagePopup from "./ImagePopup";
 
 function App() {
   return (
@@ -49,18 +50,7 @@ function App() {
             <button type="button" class="popup__close"></button>
           </div>
         </div>
-        <div class="popup popup_type_photo">
-          <div class="popup__container_photo">
-            <img
-              class="popup__picture"
-              src="#"
-              alt="Изображение достопримечательности данного места"
-            />
-            <h3 class="popup__caption"></h3>
-
-            <button type="button" class="popup__close"></button>
-          </div>
-        </div>
+        <ImagePopup />
         <div class="popup popup_type_add-card">
           <div class="popup__container">
             <h3 class="popup__title">Новое место</h3>
