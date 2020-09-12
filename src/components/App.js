@@ -122,22 +122,6 @@ function App() {
         </div>
       </div>
 
-      <template class="card-template">
-        <li class="card">
-          <img class="card__image" src="#" alt="" />
-          <button
-            type="button"
-            class="card__btn-delete card__btn-delete_invis"
-          ></button>
-          <div class="card__text">
-            <p class="card__title"></p>
-            <div class="card__like">
-              <button type="button" class="card__btn-like"></button>
-              <p class="card__number-likes"></p>
-            </div>
-          </div>
-        </li>
-      </template>
       {/* </body> */}
     </>
   );
