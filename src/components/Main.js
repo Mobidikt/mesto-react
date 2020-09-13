@@ -2,20 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../utils/Api";
 import Card from "./Card";
 
-function Main() {
-  function handleEditAvatarClick() {
-    const popupAvatar = document.querySelector(".popup_type_avatar");
-    popupAvatar.classList.add("popup_opened");
-  }
-  function handleEditProfileClick() {
-    const popupProfile = document.querySelector(".popup_type_profile");
-    popupProfile.classList.add("popup_opened");
-  }
-  function handleAddPlaceClick() {
-    const popupAdd = document.querySelector(".popup_type_add-card");
-    popupAdd.classList.add("popup_opened");
-  }
-
+function Main(props) {
   const [userName, setUserName] = useState("");
   const [userAvatar, setUserAvatar] = useState("");
   const [userDescription, setUserDescription] = useState("");
@@ -48,7 +35,7 @@ function Main() {
         <section className="profile">
           <button
             className="profile__btn profile__btn_avatar"
-            onClick={handleEditAvatarClick}
+            onClick={props.onEditAvatar}
           >
             <img
               className="profile__avatar"
@@ -61,14 +48,14 @@ function Main() {
             <button
               type="button"
               className="profile__btn profile__btn_edit"
-              onClick={handleEditProfileClick}
+              onClick={props.onEditProfile}
             ></button>
             <p className="profile__job">{userDescription}</p>
           </div>
           <button
             type="button"
             className="profile__btn profile__btn_add"
-            onClick={handleAddPlaceClick}
+            onClick={props.onAddPlace}
           ></button>
         </section>
         <section className="place">
@@ -77,9 +64,6 @@ function Main() {
               <Card card={card} key={card._id} />
             ))}
           </ul>
-          <div className="place__placeholder">
-            Вы не добавили ещё ни одного места
-          </div>
         </section>
       </main>
     </>
