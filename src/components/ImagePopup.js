@@ -1,17 +1,24 @@
 import React from "react";
 
-function ImagePopup() {
+function ImagePopup({ card, onClose }) {
+  const isOpen = card && "popup_opened";
+  function handleClickClose() {
+    onClose();
+  }
   return (
-    <div class="popup popup_type_photo">
-      <div class="popup__container_photo">
+    <div className={`popup popup_type_photo ${isOpen}`}>
+      <div className="popup__container_photo">
         <img
-          class="popup__picture"
-          src="#"
-          alt="Изображение достопримечательности данного места"
+          className="popup__picture"
+          src={card ? card.link : "#"}
+          alt={card ? card.name : ""}
         />
-        <h3 class="popup__caption"></h3>
-
-        <button type="button" class="popup__close"></button>
+        <h3 className="popup__caption">{card ? card.name : ""}</h3>
+        <button
+          type="button"
+          className="popup__close"
+          onClick={handleClickClose}
+        ></button>
       </div>
     </div>
   );

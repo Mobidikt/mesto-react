@@ -1,9 +1,17 @@
 import React from "react";
 
-function Card({ card }) {
+function Card({ card, onClick }) {
+  function handleClick() {
+    onClick(card);
+  }
   return (
     <li className="card">
-      <img className="card__image" src={card.link} alt={card.name} />
+      <img
+        className="card__image"
+        src={card.link}
+        alt={card.name}
+        onClick={handleClick}
+      />
       <button
         type="button"
         className="card__btn-delete card__btn-delete_invis"
