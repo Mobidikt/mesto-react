@@ -45,14 +45,14 @@ function PopupWithForm(props) {
         <form className="popup__form" name={props.name} noValidate>
           {props.children}
           <button type="submit" className="popup__button">
-            Сохранить
+            {props.button_text}
           </button>
         </form>
         <button
           type="button"
           className="popup__close"
           onClick={props.onClose}
-        ></button>
+        />
       </div>
     </div>
   );
