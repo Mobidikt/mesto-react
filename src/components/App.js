@@ -59,7 +59,10 @@ function App() {
   }, []);
 
   function handleUpdateUser(info) {
-    api.setUserInfo(info);
+    api
+      .setUserInfo(info)
+      .then((res) => {})
+      .catch();
   }
 
   function handleEsc(e) {
