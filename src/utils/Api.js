@@ -21,7 +21,7 @@ class Api {
     });
   }
   //редактирование информации профиля
-  editUserInfo(info) {
+  setUserInfo(info) {
     return this._fetch("/users/me", {
       method: "PATCH",
       headers: {
@@ -35,7 +35,7 @@ class Api {
     });
   }
   //редактирование информации профиля
-  editUserAvatar(info) {
+  setUserAvatar(info) {
     return this._fetch("/users/me/avatar", {
       method: "PATCH",
       headers: {
