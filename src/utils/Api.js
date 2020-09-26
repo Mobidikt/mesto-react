@@ -98,6 +98,15 @@ class Api {
       },
     });
   }
+  changeLikeCardStatus(cardId, isLiked) {
+    return this._fetch(`/cards/likes/${cardId}`, {
+      method: isLiked ? "PUT" : "DELETE",
+      headers: {
+        authorization: this._authorization,
+        "Content-Type": "application/json",
+      },
+    });
+  }
 }
 const api = new Api({
   serverUrl: "https://mesto.nomoreparties.co/v1/cohort-14",
