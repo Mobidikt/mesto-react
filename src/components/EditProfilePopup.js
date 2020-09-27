@@ -18,13 +18,13 @@ function EditProfilePopup(props) {
     setDescription(e.target.value);
   };
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
     props.onUpdateUser({
       name: name,
       about: description,
     });
-  }
+  };
 
   return (
     <PopupWithForm
@@ -44,9 +44,9 @@ function EditProfilePopup(props) {
           maxLength="40"
           minLength="2"
           id="name"
-          required
-          value={name}
+          value={name || ""}
           onChange={handleNameChange}
+          required
         />
         <span className="popup__error" id="name-error" />
       </label>
@@ -59,9 +59,9 @@ function EditProfilePopup(props) {
           maxLength="200"
           minLength="2"
           id="job"
-          required
-          value={description}
+          value={description || ""}
           onChange={handleDescriptionChange}
+          required
         />
 
         <span className="popup__error" id="job-error" />
