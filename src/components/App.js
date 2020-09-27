@@ -61,8 +61,15 @@ function App() {
   function handleUpdateUser(info) {
     api
       .setUserInfo(info)
-      .then((res) => {})
-      .catch();
+      .then((res) => {
+        setCurrentUser(res);
+      })
+      .catch((err) => {
+        console.log(`Ошибка обновления данных пользователя. ${err}`);
+      })
+      .finally(() => {
+        closeAllPopups();
+      });
   }
 
   function handleEsc(e) {
