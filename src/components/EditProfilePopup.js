@@ -48,7 +48,6 @@ function EditProfilePopup(props) {
           value={name}
           onChange={handleNameChange}
         />
-
         <span className="popup__error" id="name-error" />
       </label>
       <label className="popup__field">

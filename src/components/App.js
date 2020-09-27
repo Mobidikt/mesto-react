@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
 import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
@@ -71,6 +72,19 @@ function App() {
         closeAllPopups();
       });
   }
+  function handleUpdateAvatar(avatar) {
+    api
+      .setUserAvatar(avatar)
+      .then((res) => {
+        setCurrentUser(res);
+      })
+      .catch((err) => {
+        console.log(`Ошибка обновления аватара. ${err}`);
+      })
+      .finally(() => {
+        closeAllPopups();
+      });
+  }
 
   function handleEsc(e) {
     if (e.key === "Escape") {
@@ -131,25 +145,11 @@ function App() {
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
         />
-        <PopupWithForm
-          name="avatar"
-          title="Обновить аватар"
-          button_text="Сохранить"
-          onClose={closeAllPopups}
+        <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
-        >
-          <label className="popup__field">
-            <input
-              name="avatar"
-              type="url"
-              placeholder="Ссылка на новый аватар"
-              className="popup__input"
-              id="avatar"
-              required
-            />
-            <span className="popup__error" id="avatar-error" />
-          </label>
-        </PopupWithForm>
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+        />
         <PopupWithForm
           name="add-card"
           title="Новое место"
