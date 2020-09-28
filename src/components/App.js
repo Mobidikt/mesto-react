@@ -8,6 +8,7 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
@@ -45,9 +46,20 @@ function App() {
         console.log(`Удаление карточки не выполнено. ${err}`);
       });
   }
-  // function handleAddPlaceSubmit() {
-  //   setCards([...cards, newCard]);
-  // }
+  function handleAddPlaceSubmit(card) {
+    api
+      .createCard(card)
+      .then((res) => {
+        const newCard = res;
+        setCards([...cards, newCard]);
+      })
+      .catch((err) => {
+        console.log(`Ошибка добавления карточки. ${err}`);
+      })
+      .finally(() => {
+        closeAllPopups();
+      });
+  }
   useEffect(() => {
     api
       .getInitialCards()
@@ -132,8 +144,8 @@ function App() {
         <Header />
         <Main
           cards={cards}
-          handleCardLike={handleCardLike}
-          handleCardDelete={handleCardDelete}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
           onEditAvatar={handleEditAvatarClick}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
@@ -150,38 +162,11 @@ function App() {
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
         />
-        <PopupWithForm
-          name="add-card"
-          title="Новое место"
-          button_text="Создать"
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-        >
-          <label className="popup__field">
-            <input
-              name="name"
-              type="text"
-              placeholder="Название"
-              className="popup__input popup__input_mesto"
-              maxLength="30"
-              minLength="1"
-              id="mesto"
-              required
-            />
-            <span className="popup__error" id="mesto-error" />
-          </label>
-          <label className="popup__field">
-            <input
-              name="src"
-              type="url"
-              placeholder="Ссылка на картинку"
-              className="popup__input popup__input_src"
-              id="src"
-              required
-            />
-            <span className="popup__error" id="src-error" />
-          </label>
-        </PopupWithForm>
+          onAddPlace={handleAddPlaceSubmit}
+        />
         <PopupWithForm
           name="verification"
           title="Вы уверены?"
