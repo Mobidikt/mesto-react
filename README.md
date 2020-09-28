@@ -21,10 +21,10 @@ https://mobidikt.github.io/mesto-react/
 Запуск прилодения в режиме разработки.
 Открыть в браузере http://localhost:3000.
 
-## npm build
+## npm run build
 
 Собирает проект в папку dist, готовый к загрузке на сервер.
 
-## npm deploy
+## npm run deploy
 
 Выкладывает собранный проект в ветку gh-pages.
