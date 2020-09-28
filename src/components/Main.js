@@ -1,23 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
-import api from "../utils/Api";
+import React, { useContext } from "react";
 import Card from "./Card";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Main(props) {
-  const [cards, setCards] = useState([]);
   const currentUser = useContext(CurrentUserContext);
 
-  useEffect(() => {
-    api
-      .getInitialCards()
-      .then((card) => {
-        setCards(card);
-      })
-
-      .catch((err) => {
-        console.log(`Данные карточек не получены. ${err}`);
-      });
-  }, []);
   return (
     <>
       <main className="content">
@@ -49,8 +36,14 @@ function Main(props) {
         </section>
         <section className="place">
           <ul className="place__list">
-            {cards.map((card) => (
-              <Card card={card} key={card._id} onClick={props.onCardClick} />
+            {props.cards.map((card) => (
+              <Card
+                card={card}
+                key={card._id}
+                onClick={props.onCardClick}
+                onCardLike={props.onCardLike}
+                onCardDelete={props.onCardDelete}
+              />
             ))}
           </ul>
         </section>

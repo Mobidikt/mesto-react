@@ -4,8 +4,11 @@ import Main from "./Main";
 import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
 import PopupWithForm from "./PopupWithForm";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
@@ -14,6 +17,7 @@ function App() {
   const [isverificationPopupOpen, setverificationPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [currentUser, setCurrentUser] = useState("");
+  const [cards, setCards] = useState([]);
   useEffect(() => {
     api
       .getUserInfo()
@@ -24,6 +28,76 @@ function App() {
         console.log(`Данные о пользователе не получены. ${err}`);
       });
   }, []);
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+      const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
+      setCards(newCards);
+    });
+  }
+  function handleCardDelete(card) {
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        const newCards = cards.filter((c) => c._id !== card._id);
+        setCards(newCards);
+      })
+      .catch((err) => {
+        console.log(`Удаление карточки не выполнено. ${err}`);
+      });
+  }
+  function handleAddPlaceSubmit(card) {
+    api
+      .createCard(card)
+      .then((res) => {
+        const newCard = res;
+        setCards([...cards, newCard]);
+      })
+      .catch((err) => {
+        console.log(`Ошибка добавления карточки. ${err}`);
+      })
+      .finally(() => {
+        closeAllPopups();
+      });
+  }
+  useEffect(() => {
+    api
+      .getInitialCards()
+      .then((card) => {
+        setCards(card);
+      })
+      .catch((err) => {
+        console.log(`Данные карточек не получены. ${err}`);
+      });
+  }, []);
+
+  function handleUpdateUser(info) {
+    api
+      .setUserInfo(info)
+      .then((res) => {
+        setCurrentUser(res);
+      })
+      .catch((err) => {
+        console.log(`Ошибка обновления данных пользователя. ${err}`);
+      })
+      .finally(() => {
+        closeAllPopups();
+      });
+  }
+  function handleUpdateAvatar(avatar) {
+    api
+      .setUserAvatar(avatar)
+      .then((res) => {
+        setCurrentUser(res);
+      })
+      .catch((err) => {
+        console.log(`Ошибка обновления аватара. ${err}`);
+      })
+      .finally(() => {
+        closeAllPopups();
+      });
+  }
+
   function handleEsc(e) {
     if (e.key === "Escape") {
       closeAllPopups();
@@ -69,97 +143,30 @@ function App() {
       <div className="page">
         <Header />
         <Main
+          cards={cards}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
           onEditAvatar={handleEditAvatarClick}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
           onCardClick={handleCardClick}
         />
         <Footer />
-        <PopupWithForm
-          name="profile"
-          title="Редактировать профиль"
-          button_text="Сохранить"
-          onClose={closeAllPopups}
+        <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
-        >
-          <label className="popup__field">
-            <input
-              name="name"
-              type="text"
-              placeholder="Имя"
-              className="popup__input popup__input_name"
-              maxLength="40"
-              minLength="2"
-              id="name"
-              required
-            />
-            <span className="popup__error" id="name-error" />
-          </label>
-          <label className="popup__field">
-            <input
-              name="job"
-              type="text"
-              placeholder="О себе"
-              className="popup__input popup__input_job"
-              maxLength="200"
-              minLength="2"
-              id="job"
-              required
-            />
-            <span className="popup__error" id="job-error" />
-          </label>
-        </PopupWithForm>
-        <PopupWithForm
-          name="avatar"
-          title="Обновить аватар"
-          button_text="Сохранить"
           onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser}
+        />
+        <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
-        >
-          <label className="popup__field">
-            <input
-              name="avatar"
-              type="url"
-              placeholder="Ссылка на новый аватар"
-              className="popup__input"
-              id="avatar"
-              required
-            />
-            <span className="popup__error" id="avatar-error" />
-          </label>
-        </PopupWithForm>
-        <PopupWithForm
-          name="add-card"
-          title="Новое место"
-          button_text="Создать"
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+        />
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-        >
-          <label className="popup__field">
-            <input
-              name="name"
-              type="text"
-              placeholder="Название"
-              className="popup__input popup__input_mesto"
-              maxLength="30"
-              minLength="1"
-              id="mesto"
-              required
-            />
-            <span className="popup__error" id="mesto-error" />
-          </label>
-          <label className="popup__field">
-            <input
-              name="src"
-              type="url"
-              placeholder="Ссылка на картинку"
-              className="popup__input popup__input_src"
-              id="src"
-              required
-            />
-            <span className="popup__error" id="src-error" />
-          </label>
-        </PopupWithForm>
+          onAddPlace={handleAddPlaceSubmit}
+        />
         <PopupWithForm
           name="verification"
           title="Вы уверены?"
