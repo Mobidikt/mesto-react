@@ -12,7 +12,7 @@ class Api {
       return Promise.reject(`Ошибка: ${res.status}`);
     });
   }
-  getInitialUserInfo() {
+  getUserInfo() {
     return this._fetch("/users/me", {
       method: "GET",
       headers: {
@@ -21,7 +21,7 @@ class Api {
     });
   }
   //редактирование информации профиля
-  editUserInfo(info) {
+  setUserInfo(info) {
     return this._fetch("/users/me", {
       method: "PATCH",
       headers: {
@@ -35,7 +35,7 @@ class Api {
     });
   }
   //редактирование информации профиля
-  editUserAvatar(info) {
+  setUserAvatar(info) {
     return this._fetch("/users/me/avatar", {
       method: "PATCH",
       headers: {
@@ -92,6 +92,15 @@ class Api {
   deleteLike(cardId) {
     return this._fetch(`/cards/likes/${cardId}`, {
       method: "DELETE",
+      headers: {
+        authorization: this._authorization,
+        "Content-Type": "application/json",
+      },
+    });
+  }
+  changeLikeCardStatus(cardId, isLiked) {
+    return this._fetch(`/cards/likes/${cardId}`, {
+      method: isLiked ? "PUT" : "DELETE",
       headers: {
         authorization: this._authorization,
         "Content-Type": "application/json",

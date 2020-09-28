@@ -18,7 +18,7 @@ function ImagePopup({ card, onClose }) {
           type="button"
           className="popup__close"
           onClick={handleClickClose}
-        ></button>
+        />
       </div>
     </div>
   );
