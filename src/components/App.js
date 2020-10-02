@@ -3,18 +3,19 @@ import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
-import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import AddPlacePopup from "./AddPlacePopup";
+import VerificationPopup from "./VerificationPopup";
 
 function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
-  const [isverificationPopupOpen, setverificationPopupOpen] = useState(false);
+  const [isVerificationPopupOpen, setVerificationPopupOpen] = useState(false);
+  const [isImagePopupOpen, setImagePopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [currentUser, setCurrentUser] = useState("");
   const [cards, setCards] = useState([]);
@@ -30,10 +31,15 @@ function App() {
   }, []);
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-      const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
-      setCards(newCards);
-    });
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
+        setCards(newCards);
+      })
+      .catch((err) => {
+        console.log(`Ошибка инициализации лайка. ${err}`);
+      });
   }
   function handleCardDelete(card) {
     api
@@ -41,6 +47,7 @@ function App() {
       .then(() => {
         const newCards = cards.filter((c) => c._id !== card._id);
         setCards(newCards);
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(`Удаление карточки не выполнено. ${err}`);
@@ -51,14 +58,13 @@ function App() {
       .createCard(card)
       .then((res) => {
         const newCard = res;
-        setCards([...cards, newCard]);
+        setCards([newCard, ...cards]);
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(`Ошибка добавления карточки. ${err}`);
       })
-      .finally(() => {
-        closeAllPopups();
-      });
+      .finally(() => {});
   }
   useEffect(() => {
     api
@@ -76,26 +82,24 @@ function App() {
       .setUserInfo(info)
       .then((res) => {
         setCurrentUser(res);
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(`Ошибка обновления данных пользователя. ${err}`);
       })
-      .finally(() => {
-        closeAllPopups();
-      });
+      .finally(() => {});
   }
   function handleUpdateAvatar(avatar) {
     api
       .setUserAvatar(avatar)
       .then((res) => {
         setCurrentUser(res);
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(`Ошибка обновления аватара. ${err}`);
       })
-      .finally(() => {
-        closeAllPopups();
-      });
+      .finally(() => {});
   }
 
   function handleEsc(e) {
@@ -116,6 +120,11 @@ function App() {
     setEditAvatarPopupOpen(true);
     setEventListeners();
   }
+  function handleDeleteCardClick(card) {
+    setVerificationPopupOpen(true);
+    setSelectedCard(card);
+    setEventListeners();
+  }
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
     setEventListeners();
@@ -125,14 +134,17 @@ function App() {
     setEventListeners();
   }
   function handleCardClick(card) {
+    setImagePopupOpen(true);
     setSelectedCard(card);
     setEventListeners();
   }
+
   function closeAllPopups() {
     setEditAvatarPopupOpen(false);
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
-    setverificationPopupOpen(false);
+    setVerificationPopupOpen(false);
+    setImagePopupOpen(false);
     setSelectedCard(null);
     document.removeEventListener("keydown", handleEsc);
     document.removeEventListener("click", overlayClose);
@@ -145,7 +157,7 @@ function App() {
         <Main
           cards={cards}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onCardDelete={handleDeleteCardClick}
           onEditAvatar={handleEditAvatarClick}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
@@ -167,14 +179,17 @@ function App() {
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
         />
-        <PopupWithForm
-          name="verification"
-          title="Вы уверены?"
-          button_text="Да"
-          isOpen={isverificationPopupOpen}
+        <ImagePopup
+          isOpen={isImagePopupOpen}
+          card={selectedCard}
           onClose={closeAllPopups}
-        ></PopupWithForm>
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        />
+        <VerificationPopup
+          isOpen={isVerificationPopupOpen}
+          onClose={closeAllPopups}
+          onDeleteCard={handleCardDelete}
+          card={selectedCard}
+        />
       </div>
     </CurrentUserContext.Provider>
   );

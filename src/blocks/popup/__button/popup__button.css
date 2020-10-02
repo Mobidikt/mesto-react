@@ -8,7 +8,7 @@
   line-height: 22px;
   text-align: center;
   background-color: #000000;
-  margin: 18px 0 0;
+  margin: 0;
   border: none;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -24,7 +24,6 @@
 }
 @media screen and (max-width: 555px) {
   .popup__button {
-    margin-top: 11px;
     width: 200px;
     height: 40px;
     font-size: 14px;

@@ -1,12 +1,12 @@
 import React from "react";
 
-function ImagePopup({ card, onClose }) {
-  const isOpen = card && "popup_opened";
+function ImagePopup({ card, onClose, isOpen }) {
+  const open = isOpen && "popup_opened";
   function handleClickClose() {
     onClose();
   }
   return (
-    <div className={`popup popup_type_photo ${isOpen}`}>
+    <div className={`popup popup_type_photo ${open}`}>
       <div className="popup__container_photo">
         <img
           className="popup__picture"
